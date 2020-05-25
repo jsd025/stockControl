@@ -118,7 +118,7 @@ public class formWindow extends JFrame {
 			tables = new String[] {"providers"};
 			
 			break;
-			
+			/*
 		case "PLATES":
 			columnsList = new String[][] {
 				{"Nombre", "text"},
@@ -153,7 +153,7 @@ public class formWindow extends JFrame {
 			};
 			
 			break;
-			
+			*/
 		}
 	}
 	

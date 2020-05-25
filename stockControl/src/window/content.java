@@ -160,9 +160,17 @@ public class content extends JPanel{
 	private void buttonNewOrModifyOnClick() {
 		
 		if (table.getSelectedRow() == -1) {
-			new form.formWindow(this, consultedItem);					
+			if (consultedItem.toUpperCase().equals("PRODUCTS") || consultedItem.toUpperCase().equals("PROVIDERS")) {
+				new form.formWindow(this, consultedItem);
+			} else {
+				new form.adaptableFormWindow(consultedItem);
+			}
 		} else {
-			new form.formWindow(this, consultedItem, table.getModel().getValueAt(table.getSelectedRow(), 0).toString());
+			if (consultedItem.toUpperCase().equals("PRODUCTS") || consultedItem.toUpperCase().equals("PROVIDERS")) {
+				new form.formWindow(this, consultedItem, table.getModel().getValueAt(table.getSelectedRow(), 0).toString());
+			} else {
+				//new form.adaptableFormWindow(consultedItem, table.getModel().getValueAt(table.getSelectedRow(), 0).toString());
+			}
 		}
 		
 	}
