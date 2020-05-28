@@ -21,8 +21,6 @@ public class menuPanel extends JPanel{
 	
 	menuPanel(Dimension panelDimension) {
 		
-		System.out.println("Dimension menu: \nAncho: "+panelDimension.getWidth()+"\nAlto: "+panelDimension.getHeight()+"\n");
-		
 		this.panelDimension = panelDimension;
 		
 		colorPersonalizadoFondo = new Color(208, 253, 105);
@@ -63,24 +61,24 @@ public class menuPanel extends JPanel{
 
 	private void fillList() {
 		
-		String list[] = {"Comandero", "Productos", "Proveedores", "Platos", "Registro de comandas", "Generador de informes", "Administrar permisos de usuarios"};		
+		String list[] = {"Comandero", "Productos", "Proveedores", "Platos", "Registro de comandas", "Administrar permisos de usuarios"};		
+		String[][] userPermissions = setting.userSettings.getUserPermissions();
 		
 		JButton buttonN;
 		
 		for (int i=0; i<list.length; i++) {
-			
-			buttonN = new JButton();
-			buttonN.setText(list[i]);
-			buttonN.setMinimumSize(new Dimension(50, 30));
-			buttonN.setBorderPainted(false);
-			buttonN.setContentAreaFilled(false);
-			buttonN.setFocusPainted(false);
-			buttonN.setHorizontalAlignment(SwingConstants.LEFT);
-			buttonN.setBackground(colorSelectedButton);
-			buttonList.add(buttonN);
-			
+			if (userPermissions[i][0].equals(list[i]) && userPermissions[i][1].equals("true")) {
+				buttonN = new JButton();
+				buttonN.setText(list[i]);
+				buttonN.setMinimumSize(new Dimension(50, 30));
+				buttonN.setBorderPainted(false);
+				buttonN.setContentAreaFilled(false);
+				buttonN.setFocusPainted(false);
+				buttonN.setHorizontalAlignment(SwingConstants.LEFT);
+				buttonN.setBackground(colorSelectedButton);
+				buttonList.add(buttonN);
+			}
 		}
-		
 	}
 	
 	private void createComponents() {

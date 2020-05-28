@@ -1,6 +1,5 @@
 package window;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -10,10 +9,7 @@ import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.SwingUtilities;
 
 public class mainWindow extends JFrame{
 	
@@ -65,13 +61,6 @@ public class mainWindow extends JFrame{
 		//Size the frame.
 		this.setSize(mainWindowDimension);
 		
-		//login window.
-		if (userPermissions == null) {
-			buildLoginWindow();
-			//wait();
-			//esperar al notify de la ventana de login.
-		}
-		
 		//Components for the frame.
 		createComponents();
 		
@@ -85,8 +74,6 @@ public class mainWindow extends JFrame{
 	}
 
 	private void createComponents() {
-		
-		System.out.println("Dimension ventana: \nAncho: "+mainWindowDimension.getWidth()+"\nAlto: "+mainWindowDimension.getHeight()+"\n");
 		
 		//Create menu, default content and split pane.
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new menuPanel(new Dimension(((int)mainWindowDimension.getWidth()/5),(int)mainWindowDimension.getHeight())), null);
@@ -106,12 +93,6 @@ public class mainWindow extends JFrame{
 				}
 			});
 		}
-	}
-	
-	private void buildLoginWindow() {
-		
-		
-		
 	}
 	
 	public void refresh() {
@@ -148,7 +129,7 @@ public class mainWindow extends JFrame{
 						case "Proveedores": updateSplitPane(new content(contentDimension, "providers")); break;
 						case "Platos": updateSplitPane(new content(contentDimension, "plates")); break;
 						case "Registro de comandas": updateSplitPane(new content(contentDimension, "orders")); break;
-						case "Generador de informes": updateSplitPane(new contentReportsGenerator(contentDimension)); break;
+						//case "Generador de informes": updateSplitPane(new contentReportsGenerator(contentDimension)); break;
 						case "Administrar permisos de usuarios": updateSplitPane(new contentUserPermissionManager(contentDimension)); break;
 						//case "Configuración": splitPane.setRightComponent(new contentUserConfiguration(contentDimension)); break;
 						default: System.out.println("Error 301!"); break;//Imprimir aquí mensaje de alerta.
