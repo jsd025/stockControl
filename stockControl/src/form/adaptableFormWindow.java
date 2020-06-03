@@ -17,16 +17,20 @@ import components.DoubleInputPanel;
 import components.TextInputPanel;
 import mainWindow.content;
 
+//Class for a form that needs to be resized at runtime
 public class adaptableFormWindow extends JFrame {
+	//This class is used to insert and update plates and orders
 	
-	String[][] columnsList;
-	JPanel panel;
-	ArrayList<Component> elements = new ArrayList<Component>();
-	String[] products;
-	String consultedItem;
-	String nameForModifyObject;
-	content invoker;
+	//CLASS VARIABLES
+	private String[][] columnsList;
+	private JPanel panel;
+	private ArrayList<Component> elements = new ArrayList<Component>();
+	private String[] products;
+	private String consultedItem;
+	private String nameForModifyObject;
+	private content invoker;
 	
+	//CONSTRUCTORS
 	public adaptableFormWindow(content invoker, String consultedItem) {
 		
 		this.invoker = invoker;
@@ -44,25 +48,27 @@ public class adaptableFormWindow extends JFrame {
 		
 	}
 	
+	//METHODS FOR CONSTRUCT CLASS
 	private void initializeVariables(String consultedItem) {
-		if (consultedItem.toUpperCase().equals("PLATES")) {
-			//Almaceno el texto del label, y el nombre de la columna en la base de datos,
+		if (consultedItem.toUpperCase().equals("PLATES")) {	//For plates
+			//Store the label text, and the column name for the database
 			columnsList = new String[][] {
 				{"Nombre", "plates.name"},
-				{null, "products.spanish_name", "products_plates_relationship.amount"}
+				{null, "products.spanish_name", "products_plates_relationship.amount"}	//Null because it has no label
 			};
-		} else if (consultedItem.toUpperCase().equals("ORDERS")) {
-			//Almaceno el texto del label, y el nombre de la columna en la base de datos,
+		} else if (consultedItem.toUpperCase().equals("ORDERS")) {	//For orders
+			//Store the label text, and the column name for the database
 			columnsList = new String[][] {
 				{"Proveedor", "providers.name"},
 				{"Fecha", "orders.date"},
-				{null, "products.spanish_name", "products_orders_relationship.ordered_amount"}
+				{null, "products.spanish_name", "products_orders_relationship.ordered_amount"}	//Null because it has no label
 			};
 		}
 		
 		this.consultedItem = consultedItem;
 		products = getAllProducts();
 		panel = new JPanel(null);
+		panel.setBackground(setting.programSettings.getBackgroundContentColor());
 	}
 	
 	private void buildFrame() {
@@ -84,6 +90,7 @@ public class adaptableFormWindow extends JFrame {
 		
 	}
 	
+	//METHODS	
 	private void buildInputComponents() {
 		for (int i=0; i<columnsList.length; i++) {
 						
@@ -125,6 +132,7 @@ public class adaptableFormWindow extends JFrame {
 	
 	private void buildButtons() {
 		JButton buttonCancel = new JButton("Cancelar");
+		//Button cancel only need to dispose this window.
 		buttonCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
@@ -133,9 +141,8 @@ public class adaptableFormWindow extends JFrame {
 		});
 		addElements(buttonCancel);
 		
-		//Añadir que tiene que hacer si estoy creando un nuevo registro.
-		
 		JButton buttonAccept = new JButton("Aceptar");
+		//Button accept inserta o actualiza la base de datos para luego cerrar el formulario.
 		buttonAccept.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
@@ -150,7 +157,7 @@ public class adaptableFormWindow extends JFrame {
 					invoker.refreshTable();
 					disposeWindow();
 				} else {
-					new alertWindow("Error: 602: Los datos introducidos no son correctos o no se han podido leer", "Aceptar");
+					new alertWindow("Error: 501: Los datos introducidos no son correctos o no se han podido leer", "Aceptar");
 				}
 			}
 		});
@@ -161,12 +168,11 @@ public class adaptableFormWindow extends JFrame {
 		String[][] inputData = new String[elements.size()-2][2];
 		
 		for (int i=0; i<elements.size(); i++) {
-			//Si son botones no hago nada.
 			switch (elements.get(i).getClass().toString()) {
-				case "class form.TextViewInputPanel": 
+				case "class components.TextInputPanel":
 					inputData[i][0] = ((TextInputPanel) elements.get(i)).getTextFieldText();
 					break;
-				case "class form.DoubleInputPanel":
+				case "class components.DoubleInputPanel":
 					String itemSelected = ((DoubleInputPanel) elements.get(i)).getItemSelected();
 					String textFieldText = ((DoubleInputPanel) elements.get(i)).getTextFieldText();
 					inputData[i][0] = itemSelected;
@@ -174,6 +180,7 @@ public class adaptableFormWindow extends JFrame {
 					break;
 			}
 		}
+		
 		return inputData;
 	}
 	
@@ -184,27 +191,25 @@ public class adaptableFormWindow extends JFrame {
 		for (int i=0; i<inputData.length; i++) {
 			if (inputData[i][0] != null) {
 				if (inputData[i][1] == null) {
-					//Date:
-					if (consultedItem.toUpperCase().equals("ORDERS") && i == 1) {
+					if (consultedItem.toUpperCase().equals("ORDERS") && i == 1) {	//If input is the date of order form
 						String date = inputData[i][0];
 						if (!(isNumber(date.substring(0, 4)) && isNumber(date.substring(5, 7)) && isNumber(date.substring(8, 10))) || (!(date.substring(4, 5).equals("-") && date.substring(7, 8).equals("-")))) {
 							everythingOK = false;
-							new alertWindow("Error 308: No se ha actualizado la base de datos. El formato correcto para la fecha es: aaaa-mm-dd", "Aceptar");
+							new alertWindow("Error 502: Formato incorrecto. El formato correcto para la fecha es: aaaa-mm-dd", "Aceptar");
 						}
 					}
 				} else {
-					//Comprobar que no se repitan productso
 					for (int j=0; j<productsList.size(); j++) {
 						if (productsList.get(j).equals(inputData[i][0])) {
 							everythingOK = false;
-							new alertWindow("Error 309: No se ha actualizado la base de datos. Hay productos repetidos", "Aceptar");
+							new alertWindow("Error 503: Formato incorrecto. Hay productos repetidos", "Aceptar");
 						}
 					}
 					productsList.add(inputData[i][0]);
 					
 					if (!isNumber(inputData[i][1])) {
 						everythingOK = false;
-						new alertWindow("Error 310: No se ha actualizado la base de datos. Formato incorrecto de entrada", "Aceptar");
+						new alertWindow("Error 504: Formato de formulario incorrecto", "Aceptar");
 					}
 				}
 			}
@@ -213,24 +218,14 @@ public class adaptableFormWindow extends JFrame {
 	}
 	
 	private void insertInDatabase(String[][] inputData) {
-		
-		//En caso de insert plate:
-		//Si inputData contiene valores null, null. Descartarlos al principio.
-		//Si inputdata [i][1] es null. inputData[i][0] contiene el nombre del plato.
-		//**Debo insertar el plates con plates.name y luego recuperar el ID del plate que acabo de insertar:
-		//	INSERT INTO plates VALUES(plates.name = inputData[i][0]);
-		//  SELECT plates.id_plate FROM plates WHERE plates.name = inputData[i][0];	//Obtengo el id de plate.
-		//
-		//Bucle: Para todos los casos donde inputData[i][1] no sea null:
-		//	Select id_produc from products where products.spanish_name = inputData[i][0];
-		//	Ahora debo insertar en ppr: INSERT INTO ppr VALUES(id_plate = [id_plate que acabo de conseguir], id_product = [id_product que acabo de conseguir ], amount = [i][1]);
+		//To insert into the database
 		
 		try {
 			switch(consultedItem.toUpperCase()) {
 			case "PLATES":
 				String idPlate = null;
 				for (int i=0; i<inputData.length; i++) {
-					if (!(inputData[i][0] == null && inputData[i][1] == null)) {				
+					if (!(inputData[i][0] == null && inputData[i][1] == null)) {
 						if (inputData[i][1] == null) {
 							String[][] data = new String[][] {{"plates.name", "'" + inputData[i][0] + "'"}};
 							String table = "plates";
@@ -260,14 +255,6 @@ public class adaptableFormWindow extends JFrame {
 				}
 				break;
 			case "ORDERS":
-				/*
-				for (int i=0; i<inputData.length; i++) {
-					for (int j=0; j<inputData[i].length; j++) {
-						System.out.print(inputData[i][j] + ", ");
-					}
-					System.out.println("");
-				}
-				*/
 				Boolean isProvider = true;
 				String idOrder = null;
 				String idProvider = null;
@@ -313,35 +300,13 @@ public class adaptableFormWindow extends JFrame {
 				break;
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			new alertWindow("Error 306: Ha ocurrido un error al insertar en la base de datos", "Aceptar");
+			//e.printStackTrace();
 		}
 	}
 	
 	private void updateDatabase(String[][] inputData) {
 		
-		//En caso de update plate:
-		
-		//inputData contiene valores null, null. Descartarlos al principio.
-		//inputData contiene en [i][0] el nombre cuando [i][1] sea null.
-		//En ese caso "UPDATE plates SET plates.name = inputData[0][0] WHERE plates.name = nameForModifyObject"
-		//Y, en caso de selectedItem.equals("ORDERS"):
-		//...
-		//
-		//Cuando el inputData[i][1] no es null: 
-		//Primero SELECT plates.id_plate FROM plates WHERE plates.name = nameForModifyObject"
-		//****Usar el id_plate para el siguiente SELECT (existentProducts): SELECT products.name, ppr.amount FROM products, ppr, plates WHERE (los id coincidan);
-		//****Almacenar el resultado.
-		//Generar bucle de insert para todos los resultados en inputData.length:
-		//if (inputData[i][0].equals([cualquier resultado en existentProducts[0]]), entonces hacer UPDATE en ppr. Sino, hacer insert en ppr.
-		//UPDATE en ppr:
-		//	if (!inputData[i][1].equals(([cualquier resultado en existentProducts[1]])), entonces hacer UPDATE: 
-		//		UPDATE ppr SET(ppr.amount = "inputData[i][1]) WHERE ppr.id_product = inputData[i][0] AND ppr.id_plate = [id_plate seleccionado fuera el bucle];
-		//	else: No hacer nada (se dejó el valor igual que estaba antes).
-		//INSERT en ppr:
-		//	SELECT products.id_product FROM products WHERE products.spanish_name = inputData[i][0];
-		//	**Hacer un select de id_plate para todos los insert, pero un select de id_product para cada insert.
-		//	INSERT INTO products_plates_relationship SET VALUES(id_plate = [id plate seleccionado], id_product = [id product seleccionado], amount = inputData[i][1])
 		try {
 			switch(consultedItem.toUpperCase()) {
 			case "PLATES":
@@ -396,13 +361,11 @@ public class adaptableFormWindow extends JFrame {
 							String selectedProductID = resultSetSelectedProductID.getString(1);
 							
 							if (productExistsInThisPlate) {
-								//Update en ppr.
 								String[][] data = new String[][] {{"products_plates_relationship.amount", "'" + inputData[i][1] + "'"}};
 								String[] tables = new String[] {"products_plates_relationship"};
 								String[][] inputWhere = new String[][] {{"products_plates_relationship.id_plate", "'" + idPlate + "'", "AND"}, {"products_plates_relationship.id_product", "'" + selectedProductID + "'"}};
 								dao.dbio.update(data, tables, inputWhere);
 							} else {
-								//Insert en ppr.
 								String table = "products_plates_relationship";
 								String[][] data = new String[][] {{"products_plates_relationship.id_plate", "'" + idPlate + "'"}, {"products_plates_relationship.id_product", "'" + selectedProductID + "'"}, {"products_plates_relationship.amount", inputData[i][1]}};
 								dao.dbio.insert(table, data);
@@ -415,7 +378,6 @@ public class adaptableFormWindow extends JFrame {
 				Boolean isProvider = true;
 				String idProvider = null;
 
-				//Select pr.spanish_name, por.ordered_amount WHERE (id equals)
 				String[] columnsOrdersProducts = new String[] {"products.spanish_name", "products_orders_relationship.received_amount"};
 				String[] tablesOrdersProducts = new String[] {"products", "products_orders_relationship", "orders"};
 				String[][] inputWhereOrdersProducts = new String[][] {{"products.id_product", "products_orders_relationship.id_product", "AND"}, {"products_orders_relationship.id_order", "'" + nameForModifyObject + "'"}};
@@ -435,7 +397,6 @@ public class adaptableFormWindow extends JFrame {
 					if (!(inputData[i][0] == null && inputData[i][1] == null)) {
 						if (inputData[i][1] == null) {
 							if (isProvider) {
-								//Select id_provider Where provider_name = inputData[i][0]. Luego update orders.id_provider
 								String[] columns = new String[] {"providers.id_provider"};
 								String[] tables = new String[] {"providers"};
 								String[][] inputWhere = new String[][] {{"providers.name", "'" + inputData[i][0] + "'"}};
@@ -450,7 +411,6 @@ public class adaptableFormWindow extends JFrame {
 								
 								isProvider = false;
 							} else {
-								//Update orders.date
 								String[][] data2ordersDate = new String[][] {{"orders.date", "'" + inputData[i][0] + "'"}};
 								String[] tables2ordersDate = new String[] {"orders"};
 								String[][] inputWhere2ordersDate = new String[][] {{"orders.id_order", "'" + nameForModifyObject + "'"}};
@@ -469,7 +429,6 @@ public class adaptableFormWindow extends JFrame {
 							}
 							//If product exists and amount change, make an update:
 							if (productExists && productAmountChange) {		
-								//Actualizar por.amount WHERE (ids), products.spanish_name = inputData[i][0], orders.id_order = nameForModifyObject
 								String[][] data = new String[][] {{"products_orders_relationship.amount", "'" + inputData[i][1] + "'"}};
 								String[] tables = new String[] {"products", "products_orders_relationship"};
 								String[][] inputWhere = new String[][] {{"products.id_product", "products_orders_relationship.id_product", "AND"}, {"products_orders_relationship.id_order", "'" + nameForModifyObject + "'", "AND"}, {"products.spanish_name", "'" + inputData[i][0] + "'"}};
@@ -493,14 +452,14 @@ public class adaptableFormWindow extends JFrame {
 				break;
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			new alertWindow("Error 307: Ha ocurrido un error al actualizar en la base de datos", "Aceptar");
 			e.printStackTrace();
 		}
-		
-				
+			
 	}
 	
 	private String[] getAllProducts() {
+		//Method for get productos from database.
 		try {
 			String columns[] = new String[] {"products.spanish_name"};
 			String tables[] = new String[] {"products"};
@@ -522,8 +481,8 @@ public class adaptableFormWindow extends JFrame {
 			
 			return products;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			new alertWindow("Error 308: No se han podido recuperar los productos de la base de datos", "Aceptar");
+			//e.printStackTrace();
 			return null;
 		}
 	}
@@ -562,8 +521,8 @@ public class adaptableFormWindow extends JFrame {
 			
 			return selectedProducts;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			new alertWindow("Error 309: No se han podido recuperar los productos existentes previamente", "Aceptar");
+			//e.printStackTrace();
 			return null;
 		}
 	}
@@ -592,20 +551,19 @@ public class adaptableFormWindow extends JFrame {
 			}
 			
 			if (counterDate>1) {
-				new alertWindow("Error 301. Demasiados resultados para una consulta en pedidos", "Aceptar");
+				new alertWindow("Error 310: Demasiados resultados para una consulta en pedidos", "Aceptar");
 			} else if (counterDate == 0) {
-				new alertWindow("Error 302. No se ha podido leer la fecha del pedido", "Aceptar");
+				new alertWindow("Error 311: No se ha podido leer la fecha del pedido", "Aceptar");
 			}
 		} catch (SQLException e) {
-			new alertWindow("Error 404. Ha ocurrido un problema accediendo a la base de datos", "Aceptar");
+			new alertWindow("Error 312: Ha ocurrido un problema accediendo a la base de datos", "Aceptar");
 		}
 		
 		String[] result = new String[] {providerName, date};
 		return result;
 	}
 	
-	public void newComboBox() {		
-		//Llamar a este método cuando se completa algo en un comboBox nuevo.
+	public void newComboBox() {
 		DoubleInputPanel dobleInputPanel = new DoubleInputPanel(this, products, null, null, new Dimension(380, 30));
 		dobleInputPanel.unselectAllComboBoxItems();
 		addElements(dobleInputPanel);

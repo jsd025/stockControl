@@ -1,6 +1,5 @@
 package mainWindow;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,20 +15,23 @@ import alert.alertWindow;
 import components.LabelComboBoxPanel;
 import components.TextInputPanel;
 
+//Class for take orders (commander)
 public class contentTakeOrders extends JPanel {
 	
-	Dimension panelDimension;
-	LabelComboBoxPanel inputPlate;
-	TextInputPanel inputAmount;
+	//CLASS VARIABLES
+	private Dimension panelDimension;
+	private LabelComboBoxPanel inputPlate;
+	private TextInputPanel inputAmount;
 	
+	//CONSTRUCTORS
 	contentTakeOrders(Dimension panelDimension) {
-		
 		this.panelDimension = panelDimension;
 		this.setBackground(setting.programSettings.getBackgroundContentColor());
 		this.setLayout(null);
 		buildComponents();
 	}
 	
+	//METHODS
 	private void buildComponents() {
 		buildTitle();
 		buildComboBox();
@@ -63,7 +65,7 @@ public class contentTakeOrders extends JPanel {
 		buttonClear.setBounds((int)((panelDimension.getWidth()/2)-190), 130, 170, 30);
 		buttonClear.setBackground(setting.programSettings.getButtonCancelColor());
 		buttonClear.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {		
+			public void actionPerformed(ActionEvent e) {
 				clearInput();
 			}
 		});
@@ -90,7 +92,7 @@ public class contentTakeOrders extends JPanel {
 					if (everythingOK) {
 						new alertWindow("Comanda tomada correctamente", "Aceptar");
 					} else {
-						new alertWindow("Error 601: Algo salió mal tomando la comanda", "Aceptar");
+						new alertWindow("Error 401: Algo salió mal tomando la comanda", "Aceptar");
 					}
 					
 					clearInput();
@@ -122,8 +124,8 @@ public class contentTakeOrders extends JPanel {
 				users.next();
 			}
 		} catch (SQLException e) {
-			new alertWindow("Error 301: Fallo al leer la base de datos", "Aceptar");
-			e.printStackTrace();
+			new alertWindow("Error 323: Fallo al leer la base de datos", "Aceptar");
+			//e.printStackTrace();
 		}
 		
 		return platesList;
@@ -155,8 +157,8 @@ public class contentTakeOrders extends JPanel {
 				resultSetProductsAndAmounts.next();
 			}
 		} catch (SQLException e) {
-			new alertWindow("Error 301: Fallo leyendo el resultado de la base de datos", "Aceptar");
-			e.printStackTrace();
+			new alertWindow("Error 324: Fallo leyendo el resultado de la base de datos", "Aceptar");
+			//e.printStackTrace();
 		}
 		return productsAndAmounts;
 	}
@@ -169,7 +171,7 @@ public class contentTakeOrders extends JPanel {
 		String[][] inputWhere = new String[][] {{"products.spanish_name", "'" + productsData[0] + "'"}};
 		
 		int result = dao.dbio.update(data, tables, inputWhere);
-		System.out.println(result);
+
 		if (result == 1) {
 			return true;
 		} else {
@@ -188,19 +190,7 @@ public class contentTakeOrders extends JPanel {
 	}
 	
 	private void clearInput() {
-		inputPlate.changeComboBoxSelectedItem(null);
-		inputAmount.changeTextFieldText("");
+		inputPlate.setComboBoxSelectedItem(null);
+		inputAmount.setTextFieldText("");
 	}
-	
-	//Titulo: Comandero.
-	//Label: "Plato: ". Y ComboBox con todos los platos (select sin inputWhere).
-	//Label: "Cantidad: ". input para poner un texto convertible a número.
-	//Botón "Limpiar" que llame un método "reiniciarInput", que ponga el comboBox Selected en -1 y setee el texto del input en "".
-	//Boton Enviar que acceda a la base de datos con:
-	//		- Comprobar que el input es correcto.
-	//		- Un select: Obtenga todos los "id_product y amount" que haya en ppr que coincidan con el plate.name
-	//		- Un bucle de update: que actualice products donde "id_product" sea igual al recuperado en el select[i][0].
-	// 		Y current_amount sea igual igual a si mismo menos amount[i][1] recuperado en el select.
-	//Si el update se hace de forma correcta imprimir un alert con los cambios. ("Comanda tomada". "Aceptar"). Si no, alert de error.
-	//Y borra todos los datos llamando a "vaciarInput".
 }

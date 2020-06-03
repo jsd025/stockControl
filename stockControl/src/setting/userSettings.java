@@ -1,11 +1,11 @@
 package setting;
 
-import java.awt.Color;
-
 import alert.alertWindow;
 
+//Class for static store of users variables
 public class userSettings {
 	
+	//CLASS VARIABLES
 	static private String[][] userPermissions = new String[][] {
 		{"Comandero", null},
 		{"Productos", null},
@@ -14,9 +14,10 @@ public class userSettings {
 		{"Pedidos", null},
 		{"Administrar permisos de usuarios", null}
 	};
-	static private String language;
+	static private String language;	//Language is not used yet.
 	static private String username = null;
 	
+	//GETTERS & SETTERS
 	static public String[][] getUserPermissions() {
 		return userPermissions;
 	}
@@ -24,7 +25,7 @@ public class userSettings {
 	static public void setUserPermissions(String permissions) {
 		
 		if (permissions.length() != userPermissions.length) {
-			alertWindow internalError = new alertWindow("Ha ocurrado un error interno. Por favor, reinicie la aplicación", "Aceptar"); 
+			new alertWindow("Error 403: Ha ocurrido un error interno. Por favor, reinicie la aplicación", "Aceptar"); 
 		}
 		
 		for (int i=0; i<userPermissions.length; i++) {			
@@ -34,20 +35,6 @@ public class userSettings {
 				userPermissions[i][1] = "false";
 			}
 		}
-	}
-	
-	public Boolean changeUserPermission(String key, Boolean value) {
-		
-		Boolean response = false;
-		
-		for (int i=0; i<userPermissions.length; i++) {
-			if (userPermissions[i][0].equals(key)) {
-				userPermissions[i][1] = "\"" + value + "\"";
-				response = true;
-			}
-		}
-		
-		return response;
 	}
 	
 	public String getLanguage() {
@@ -66,4 +53,18 @@ public class userSettings {
 		userSettings.username = username;
 	}
 	
+	//METHODS
+	public Boolean changeUserPermission(String key, Boolean value) {
+		
+		Boolean response = false;
+		
+		for (int i=0; i<userPermissions.length; i++) {
+			if (userPermissions[i][0].equals(key)) {
+				userPermissions[i][1] = "\"" + value + "\"";
+				response = true;
+			}
+		}
+		
+		return response;
+	}
 }

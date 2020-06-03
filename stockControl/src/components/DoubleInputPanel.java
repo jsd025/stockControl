@@ -1,7 +1,6 @@
-package components;
+package components;	//The "components" package stores component sets to reuse code.
 
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
@@ -10,21 +9,22 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import form.adaptableFormWindow;
-import mainWindow.content;
 
+//class that includes a ComboBox on the left and a TextField on the right
 public class DoubleInputPanel extends JPanel {
 	
-	private adaptableFormWindow invoker;
-	private String selectedComboBoxData;
-	private JComboBox comboBox;
+	//CLASS VARIABLES
+	private adaptableFormWindow invoker;	//This variable is of type "adaptableFormWindow" because that is the only class that calls it. If there were more it would have to be of type "Object".
+	private JComboBox<String> comboBox;
 	private JTextField textField;
 	
+	//CONSTRUCTORS
 	public DoubleInputPanel(String[] comboBoxData, String selectedComboBoxData, String textFieldText, Dimension dimension) {
 		
 		this.invoker = null;
 		buildFrame(selectedComboBoxData, dimension);
-		createComboBox(comboBoxData);
 		setComboBoxSelectedItem(selectedComboBoxData);
+		createComboBox(comboBoxData);
 		createTextField(textFieldText);
 		
 	}
@@ -33,33 +33,35 @@ public class DoubleInputPanel extends JPanel {
 		
 		this.invoker = invoker;
 		buildFrame(selectedComboBoxData, dimension);
-		createComboBox(comboBoxData);
 		setComboBoxSelectedItem(selectedComboBoxData);
+		createComboBox(comboBoxData);
 		createTextField(textFieldText);
 		
 	}
 	
-	private void buildFrame(String selectedComboBoxData, Dimension dimension) {
-		//Necesito: nombre del producto y cantidad del producto.
-		this.selectedComboBoxData = selectedComboBoxData;
-		this.setSize(dimension);
-		this.setLayout(null);
-
-	}
-	
 	public DoubleInputPanel() {
 		
-		this.selectedComboBoxData = null;
 		this.setSize(380, 30);;
 		this.setLayout(null);
+		this.setBackground(setting.programSettings.getBackgroundContentColor());
 		
 		createComboBox(null);
 		createTextField(null);
 		
 	}
 	
+	//METHODS
+	private void buildFrame(String selectedComboBoxData, Dimension dimension) {
+		//Necesito: nombre del producto y cantidad del producto.
+		this.setSize(dimension);
+		this.setLayout(null);
+		this.setBackground(setting.programSettings.getBackgroundContentColor());
+
+	}
+	
+	//Add ComboBox at left side.
 	private void createComboBox(String[] comboBoxData) {
-		comboBox = new JComboBox();
+		comboBox = new JComboBox<String>();
 		
 		if (comboBoxData != null) {
 			setComboBoxData(comboBoxData);
@@ -78,6 +80,7 @@ public class DoubleInputPanel extends JPanel {
 		this.add(comboBox);
 	}
 	
+	//Add TextField at right side.
 	private void createTextField(String textFieldText) {
 		
 		if (textFieldText != null) {
@@ -91,6 +94,7 @@ public class DoubleInputPanel extends JPanel {
 		
 	}
 	
+	//GETTERS & SETTERS
 	public void setComboBoxSelectedItem(String newSelectedData) {
 		
 		for (int i=0; i<comboBox.getItemCount(); i++) {

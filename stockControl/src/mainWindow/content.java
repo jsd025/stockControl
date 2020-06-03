@@ -5,22 +5,14 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -29,10 +21,10 @@ import alert.alertWindow;
 import form.ConfirmOrderReceivedWindow;
 import listeners.tableChangesListener;
 
+//Class for display products, providers, plates and orders.
 public class content extends JPanel{
-
-	private static final long serialVersionUID = 1L;
 	
+	//VARIABLES CLASS
 	Dimension panelDimension;
 	JTextField textFieldSearch;
 	JTable table;
@@ -46,7 +38,7 @@ public class content extends JPanel{
 	//JTabel
 	String[] tableHeader;
 	
-	
+	//CONSTRUCTORS
 	content(Dimension panelDimension, String consultedItem) {
 		
 		this.setLayout(null);
@@ -91,11 +83,7 @@ public class content extends JPanel{
 			break;
 		}
 		
-		
-		
-		//System.out.println("Dimension contenido: \nAncho: "+panelDimension.getWidth()+"\nAlto: "+panelDimension.getHeight()+"\n");
-		
-		//Que ocurre si el tamaño el panel es menor que 400 en ancho o en alto: El que sea menor a 400 se establece en 400 antes de comenzar.
+		//set minimum panel size.
 		if (panelDimension.getWidth()>= 400 && panelDimension.getHeight()>=400) {
 			this.panelDimension = panelDimension;
 		} else {
@@ -115,15 +103,13 @@ public class content extends JPanel{
 		
 		this.setBackground(setting.programSettings.getBackgroundContentColor());
 		this.setMinimumSize(new Dimension(400, 400));
-		//this.setBorder(BorderFactory.createLineBorder(Color.black));
-		//System.out.println("Estableciendo tamaño de contenido:\nAncho: "+panelDimension.getWidth()+"\nAlto: "+panelDimension.getHeight()+"\n");
 		this.setBounds(0, 0, (int)panelDimension.getWidth(), (int)panelDimension.getHeight());
 		this.setAutoscrolls(true);
 		
 		createComponents();
-		
 	}
 
+	//METHODS CREATE COMPONENTS
 	private void createComponents() {
 		
 		addButtonNewOrModify();
@@ -149,7 +135,7 @@ public class content extends JPanel{
 		});
 		this.add(buttonNewOrModify);
 		
-		//Ancho: Empieza en 5% de panel y acaba en 25%.
+		//Width: Starts at 5% panel and ends at 25%
 		buttonNewOrModify.setBounds(((int)panelDimension.getWidth()/20), 10, ((int)panelDimension.getWidth()/5), 30);
 		
 	}
@@ -177,7 +163,7 @@ public class content extends JPanel{
 		
 		this.add(textFieldSearch);
 		
-		//Ancho: Empieza en 30% de panel y acaba en 80%
+		//Width: Starts at 30% panel and ends at 80%
 		textFieldSearch.setBounds(((int)(panelDimension.getWidth()*0.3)), 10, ((int)panelDimension.getWidth()/2), 30);
 	}
 	
@@ -214,7 +200,7 @@ public class content extends JPanel{
 		
 		this.add(buttonSearch);
 		
-		//Ancho: Empieza en 85% y acaba en 95%.
+		//Width: Starts at 85% panel and ends at 95%
 		buttonSearch.setBounds(((int)(panelDimension.getWidth()*0.85)), 10, ((int)panelDimension.getWidth()/10), 30);
 		
 	}
@@ -253,13 +239,10 @@ public class content extends JPanel{
 		
 		buttonDelete.setBounds(((int)(panelDimension.getWidth()*0.55)), ((int)panelDimension.getHeight()-40), ((int)(panelDimension.getWidth()*0.4)), 30);
 		
-		changeButtonDeleteVisibility(false);
+		setButtonDeleteVisibility(false);
 	}
 	
-	public void changeButtonDeleteVisibility(Boolean visibility) {
-		buttonDelete.setVisible(visibility);
-	}
-	
+	//METHODS	
 	private void addButtonConfirmOrderReceived() {
 		buttonConfirmOrderReceived = new JButton("Confirmar pedido recibido");
 		buttonConfirmOrderReceived.setBackground(new Color(91, 245, 122));
@@ -269,7 +252,7 @@ public class content extends JPanel{
 				openConfirmOrderReceivedWindow();
 			}
 		});
-		changeButtonConfirmOrderReceivedVisibility(false);
+		setButtonConfirmOrderReceivedVisibility(false);
 		this.add(buttonConfirmOrderReceived);
 	}
 
@@ -306,8 +289,6 @@ public class content extends JPanel{
 				}
 			break;
 			case "ORDERS":
-				//columns = new String[] {"prov.name", "or.date", "prod.spanish_name"};
-				//tables = new String[] {"orders or", "providers prov", "products_orders_relationship por", "products prod"};
 				String[][] ordersWhere = {{"products.id_product", "products_orders_relationship.id_product", "AND"}, {"products_orders_relationship.id_order", "orders.id_order", "AND"}, {"orders.id_provider", "providers.id_provider"}};
 				
 				if (inputWhere != null) {
@@ -387,11 +368,11 @@ public class content extends JPanel{
 			    }
 			});
 		} catch (SQLException e) {
-			e.printStackTrace();
-			new alertWindow("Error 303: No se han podido leer los datos de la base de datos.", "Aceptar");
+			//e.printStackTrace();
+			new alertWindow("Error 322: No se han podido leer los datos de la base de datos.", "Aceptar");
 		} catch (NullPointerException e) {
-			e.printStackTrace();
-			new alertWindow("Error 304: Error al conectarse con la base de datos.", "Aceptar");
+			//e.printStackTrace();
+			new alertWindow("Error 404: Valor nulo", "Aceptar");
 			
 		}
 		
@@ -404,11 +385,7 @@ public class content extends JPanel{
 		String date = table.getModel().getValueAt(table.getSelectedRow(), 1).toString();
 		String productName = table.getModel().getValueAt(table.getSelectedRow(), 2).toString();
 		
-		new ConfirmOrderReceivedWindow(this, table.getModel().getValueAt(table.getSelectedRow(), 0).toString());
-	}
-	
-	public void changeButtonConfirmOrderReceivedVisibility(Boolean visibility) {
-		buttonConfirmOrderReceived.setVisible(visibility);
+		new ConfirmOrderReceivedWindow(this, table.getModel().getValueAt(table.getSelectedRow(), 0).toString(), table.getModel().getValueAt(table.getSelectedRow(), 3).toString());
 	}
 		
 	public void changeButtonNewOrModifyText(Boolean isForModify) {
@@ -428,7 +405,17 @@ public class content extends JPanel{
 
 	}
 	*/
-
+	
+	//GETTERS & SETTERS
+	
+	public void setButtonDeleteVisibility(Boolean visibility) {
+		buttonDelete.setVisible(visibility);
+	}
+	
+	public void setButtonConfirmOrderReceivedVisibility(Boolean visibility) {
+		buttonConfirmOrderReceived.setVisible(visibility);
+	}
+	
 	public JTable getTable() {
 		return table;
 	}

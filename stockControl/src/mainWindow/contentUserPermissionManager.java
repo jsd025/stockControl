@@ -1,6 +1,5 @@
 package mainWindow;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -17,22 +16,17 @@ import javax.swing.SwingConstants;
 import alert.alertWindow;
 import components.LabelComboBoxPanel;
 import components.LabelRadioButtonPanel;
-import dao.dbio;
 
+//Class for manage permissions of users
 public class contentUserPermissionManager extends JPanel{
-	 
-	String selectedUsername;
-	String selectedPermissions;
 	
-	Dimension panelDimension;
+	//CLASS VARIABLES
+	private String selectedUsername;
+	private Dimension panelDimension;
+	private ArrayList<Component> componentsList = new ArrayList<Component>();
 	
-	ArrayList<Component> componentsList = new ArrayList<Component>();
-	
-	contentUserPermissionManager(Dimension panelDimension) {		
-		//Añadir un titulo.
-		//Añadir un formulario con nombre de usuario y sus permisos sacados de la longitud de "userPermissions[i][0]"
-		//y sus permisos actuales en "true" o "false", con un CheckBox de "Sí" o "No". Al finalizar hacer update.
-		
+	//CONSTRUCTOR
+	contentUserPermissionManager(Dimension panelDimension) {				
 		this.panelDimension = panelDimension;
 		this.setBackground(setting.programSettings.getBackgroundContentColor());
 		this.setLayout(null);
@@ -42,6 +36,7 @@ public class contentUserPermissionManager extends JPanel{
 		buildComponents();
 	}
 	
+	//METHODS
 	private void buildComponents() {
 		
 		buildTitle();
@@ -81,7 +76,7 @@ public class contentUserPermissionManager extends JPanel{
 			componentsList.add(inputUsername);
 			this.add(inputUsername);
 		} catch (SQLException e) {
-			new alertWindow("Error 301: Fallo al leer la base de datos", "Aceptar");
+			new alertWindow("Error 325: Fallo al leer la base de datos", "Aceptar");
 			e.printStackTrace();
 		}
 	}
@@ -98,7 +93,7 @@ public class contentUserPermissionManager extends JPanel{
 			} else if (userPermissions[i][1].equals("true")) {
 				indexRadioButtonSelected = 1;
 			}
-			//Crear clase "LabelRadioButtonPanel".
+
 			LabelRadioButtonPanel inputPermission = new LabelRadioButtonPanel(userPermissions[i][0], radioButtonList, indexRadioButtonSelected);
 			inputPermission.setBounds((int)((panelDimension.getWidth()/2)-190), 90+(i*40), 380, 30);
 			componentsList.add(inputPermission);
@@ -116,13 +111,13 @@ public class contentUserPermissionManager extends JPanel{
 				String inputPermissions = getInputPermissions();
 				
 				if (checkInputFormat(inputPermissions)) {
-					//Update a base de datos
+					//Making update whit new user permissions.
 					String[][] data = new String[][] {{"u.permissions", "'" + inputPermissions + "'"}};
 					String[] tables = new String[] {"users u"};
 					String[][] inputWhere = new String[][] {{"u.username", "'" + getInputUsername() + "'"}};
 					dao.dbio.update(data, tables, inputWhere);
 					
-					//Si ha cambiado sus propios permisos pedir que reinicie la aplicación.
+					//If you have changed your own permissions, say to restart the app.
 					if (getInputUsername().equals(setting.userSettings.getUsername())) {
 						new alertWindow("Ha modificado los permisos de su propio usuario. Reinicie la aplicación para guardar los cambios", "Aceptar");
 					}
@@ -142,6 +137,26 @@ public class contentUserPermissionManager extends JPanel{
 		}
 	}
 	
+	public void refreshPermissions(String username) {
+		
+		String userPermissions = getUserPermissions(username);
+		System.out.println(username);
+		int permissionsCounter = 0;				
+		for (int i=0; i<componentsList.size(); i++) {
+			try {
+				if (permissionsCounter <6) {
+					int permission = Character.getNumericValue(userPermissions.charAt(permissionsCounter));
+					((LabelRadioButtonPanel) componentsList.get(i)).setRadioButtonSelected(permission);
+					permissionsCounter++;
+				}
+			} catch(ClassCastException e) {
+				//Llego aquí cuando el componente leido es un JButton o un LabelComboBoxPanel.
+				//Lo ignoro.
+			}
+		}
+	}
+	
+	//GETTERS & SETTERS	
 	private String getInputPermissions() {
 		String inputPermissions = "";
 		for (int i=0; i<componentsList.size(); i++) {
@@ -151,11 +166,11 @@ public class contentUserPermissionManager extends JPanel{
 				} else if (((LabelRadioButtonPanel) componentsList.get(i)).getRadioButtonTextSelected().equals("No")) {
 					inputPermissions += "0";
 				} else {
-					//Error. Cancelar operación y poner mensaje de alerta.
+					new alertWindow("Error 402: Error interno", "Aceptar");
 				}
 			} catch(ClassCastException e) {
-				//Llego aquí cuando el componente leido es un JButton o un LabelComboBoxPanel.
-				//Lo ignoro.
+				//I get here when the read component is a JButton or a LabelComboBoxPanel.
+				//Just ignore it.
 			}
 		}
 		return inputPermissions;
@@ -188,27 +203,8 @@ public class contentUserPermissionManager extends JPanel{
 		} catch (SQLException e) {
 			e.printStackTrace();
 			permissions = "000000";
-			new alertWindow("Error 501: Fallo en recuperar los permisos guardados de un usuario", "Aceptar");
+			new alertWindow("Error 326: Fallo en recuperar los permisos guardados de un usuario", "Aceptar");
 		}
 		return permissions;
-	}
-	
-	public void refreshPermissions(String username) {
-		
-		String userPermissions = getUserPermissions(username);
-		System.out.println(username);
-		int permissionsCounter = 0;				
-		for (int i=0; i<componentsList.size(); i++) {
-			try {
-				if (permissionsCounter <6) {
-					int permission = Character.getNumericValue(userPermissions.charAt(permissionsCounter));
-					((LabelRadioButtonPanel) componentsList.get(i)).setRadioButtonSelected(permission);
-					permissionsCounter++;
-				}
-			} catch(ClassCastException e) {
-				//Llego aquí cuando el componente leido es un JButton o un LabelComboBoxPanel.
-				//Lo ignoro.
-			}
-		}
 	}
 }

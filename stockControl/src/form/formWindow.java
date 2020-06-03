@@ -18,41 +18,36 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import alert.alertWindow;
 import components.DoubleInputPanel;
 import mainWindow.content;
 
+//Class for a form
 public class formWindow extends JFrame {
+	//This class is used to insert and update products and providers
 	
-	String[][] columnsList;
+	//CLASS VARIABLES
+	private String[][] columnsList;
+	private String[][] data = null;
+	private String[] tables;
+	private String nameForModifyObject;
+	private ArrayList<Object> inputList;
+	private JPanel panel;
+	private String consultedItem;
+	private content invokerClass;
 	
-	String[][] data = null;
-	
-	String[] tables;
-	
-	String nameForModifyObject;
-	
-	ArrayList<Object> inputList;
-	
-	JPanel panel;
-	
-	String consultedItem;
-	
-	content invokerClass;
-	
+	//CONSTRUCTORS
 	public formWindow(content invokerClass, String consultedItem) {
 		
 		this.invokerClass = invokerClass;
-		
 		this.consultedItem = consultedItem;
-		
 		setWindowVariables();
 		
 		panel = new JPanel(null);
-		
+		panel.setBackground(setting.programSettings.getBackgroundContentColor());
 		this.add(panel);
 		
 		setFrameSettings();
-		
 		createPanelComponents();
 		
 	}
@@ -60,23 +55,18 @@ public class formWindow extends JFrame {
 	public formWindow(content invokerClass, String consultedItem, String nameForModifyObject) {
 		
 		this.invokerClass = invokerClass;
-		
 		this.consultedItem = consultedItem;
-		
 		this.nameForModifyObject = nameForModifyObject;
-		
 		setWindowVariables();
 		
 		panel = new JPanel(null);
-		
 		this.add(panel);
-		
 		setFrameSettings();
-		
 		createPanelComponents();
 		
 	}
 	
+	//METHODS FOR CONSTRUCT CLASS
 	private void setWindowVariables() {
 		switch (consultedItem) {
 		
@@ -119,68 +109,24 @@ public class formWindow extends JFrame {
 			tables = new String[] {"providers"};
 			
 			break;
-			/*
-		case "PLATES":
-			columnsList = new String[][] {
-				{"Nombre", "text"},
-				{"Producto", "combo", "multiple"},
-				{"Cantidad", "text", "multiple"},
-			};
-			
-			data = new String[][] {
-				{"pl.name", null},
-				//{"ppr.id_product", null},
-				{"pr.spanish_name", null}, 
-				{"ppr.amount", null}
-			};
-			
-			tables = new String[] {"plates pl", "products_plates_relationship ppr", "products pr"};
-			
-			break;
-		
-		case "ORDERS":
-			columnsList = new String[][] {
-				{"Proveedor", "text"},
-				{"Fecha", "text"},
-				{"Producto", "combo", "multiple"},
-				{"Cantidad", "text", "multiple"},
-			};
-			
-			data = new String[][] {
-				{"name", null},
-				{"date", null}, 
-				{"spanish_name", null},
-				{"ordered_amount", null}
-			};
-			
-			break;
-			*/
 		}
 	}
 	
 	private void setFrameSettings() {
-		
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		
 		this.setSize(380, ((40*(columnsList.length+2))+10));
-		
 		this.setLocationRelativeTo(null);
-		
 		this.setVisible(true);
 	}
 	
 	private void createPanelComponents() {
-		
 		createTextLabels();
-		
 		createInputBoxes();
-		
 		createMultipleBoxes();
-		
 		createButtons();
-		
 	}
 
+	//METHODS
 	private void createTextLabels() {
 
 		ArrayList<JLabel> textList = new ArrayList<JLabel>();
@@ -191,11 +137,8 @@ public class formWindow extends JFrame {
 					continue;
 				}
 			}
-			//System.out.println(columnsList[i]+": "+leftDistance+" | "+topDistance);
 			JLabel text = new JLabel(columnsList[i][0]);
-			
 			textList.add(text);
-			
 		}
 		
 		for (int i=0; i<textList.size(); i++) {
@@ -281,7 +224,7 @@ public class formWindow extends JFrame {
 				String[] columns = new String[] {"pr.spanish_name"};
 				String[] tables = new String[] {"products pr"};
 				
-				//Obtener todos los productos.
+				//Get all products
 				ResultSet resultSetAllProducts = dao.dbio.select(columns, tables, null);
 				ArrayList<String> dataFromResultSetAllProducts = new ArrayList<String>();
 				
@@ -300,7 +243,7 @@ public class formWindow extends JFrame {
 					resultSetAllProducts.next();
 				}
 	
-				//Obtener el nombre del producto seleccionado
+				//Get name of selected product
 				columns = new String[] {"pr.spanish_name", "ppr.amount"};
 				tables = new String[] {"products pr", "products_plates_relationship ppr", "plates p"};
 				String[][] inputWhere = new String[][] {{"pr.id_product", "ppr.id_product", "AND"}, {"ppr.id_plate", "p.id_plate"}};
@@ -320,7 +263,8 @@ public class formWindow extends JFrame {
 					this.add(multipleBox);
 				}
 			} catch (SQLException e) {
-				e.printStackTrace();
+				new alertWindow("Error 316: No se han podido recuperar los datos del producto de la base de datos", "Aceptar");
+				//e.printStackTrace();
 			}
 		}
 	}
@@ -328,7 +272,7 @@ public class formWindow extends JFrame {
 	private void createButtons() {
 		
 		JButton buttonCancel = new JButton("Cancelar");
-		
+		//Button cancel only close this form.
 		buttonCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				closeFormWindow();
@@ -353,29 +297,32 @@ public class formWindow extends JFrame {
 						valuesForUpdate[i] = textFieldValues[i];
 					}
 					
-					//Tener cuidado de que ocurre con esto en caso de actualizacion
 					if (consultedItem.equals("PRODUCTS")) {
-						//Spent amount:
+						//Spent amount (this column of the table is not used yet):
 						valuesForUpdate[5] = "0";
 					}
 					
 					updateDataValues(valuesForUpdate);
 					
-					if (nameForModifyObject == null) {	//Este if se ejecuta en caso de creacion de nuevo registro. 
+					if (nameForModifyObject == null) {	//only true if is new product/provider
 						
 						String table = consultedItem.toLowerCase();
 						String[][] insertData = new String[data.length][2];
 						for (int i=0; i<insertData.length; i++) {
 							insertData[i][0] = data[i][0];
-							if (data[i][1] == null) {
-								insertData[i][1] = data[i][1];
+							if (!data[i][0].equals("spent_amount")) {
+								if (data[i][1] == null) {
+									insertData[i][1] = data[i][1];
+								} else {
+									insertData[i][1] = "'" + data[i][1] + "'";
+								}
 							} else {
-								insertData[i][1] = "'" + data[i][1] + "'";
+								insertData[i][1] = "0";
 							}
 						}
 						dao.dbio.insert(table, insertData);
 						
-					} else {	//Este else se ejecuta en caso de actualización de un registro ya creado.
+					} else {	//This is only for update a product/provider
 						
 						String[][] updateData;
 						
@@ -429,9 +376,7 @@ public class formWindow extends JFrame {
 						
 						if ((consultedItem.equals("PRODUCTS") && (i == 2 || i == 3)) && !isNumeric(textField.getText())) {
 							textField.setBorder(BorderFactory.createLineBorder(Color.red));
-							
 							checked = false;
-							
 						} else {
 							textField.setBorder(BorderFactory.createLineBorder(Color.green));
 						}
@@ -440,26 +385,20 @@ public class formWindow extends JFrame {
 				} else {
 					
 					if ( !textField.getText().trim().equals("") && !isNumeric(textField.getText())) {
-						
 						textField.setBorder(BorderFactory.createLineBorder(Color.red));
-						
 						checked = false;
-						
 					} else {
-						
 						textField.setBorder(BorderFactory.createLineBorder(Color.green));
-						
 					}
 					
 				}
 			} catch (ClassCastException e) {
-				//Esto se ejecuta cuando se intenta verificar un comboBox. El contenido de un comboBox siempre estará bien. Así que simplemente lo omito.
+				//This is executed when trying to verify a comboBox. The content of a comboBox will always be fine. 
+				//Just skip it.
 			}
 			
 		}
-		
 		return checked;
-		
 	}
 	
 	private Boolean isNumeric (String text) {
@@ -508,21 +447,21 @@ public class formWindow extends JFrame {
 					
 					String[] columns = {"id_provider"};
 					String[] tables = {"providers"};
-					String[][] inputWhere = {{"name", dataValues[i]}};
+					String[][] inputWhere = {{"name", "'" + dataValues[i] + "'"}};
 					
 					ResultSet resultSet = dao.dbio.select(columns, tables, inputWhere);
 					try {
 						resultSet.first();					
 						data[i][1] = Integer.toString(resultSet.getInt("id_provider"));
 					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						new alertWindow("Error 317: No se ha podido obtener el id del proveedor seleccionado", "Aceptar");
+						//e.printStackTrace();
 					}
 				}
 			} catch (ArrayIndexOutOfBoundsException e) {
-				//Indice fuera de rango. Error común cuando se modifica un producto: columnsList es mas corto en ese caso que data.
-				//Spent amount.
-				//Lo ignoro.
+				//Index out of range. Common mistake when modifying a product: columnsList is shorter in that case it dates.
+				//This exception is caused for "spent_amount" columns
+				//Just skip it.
 			}
 		}
 		
@@ -536,9 +475,7 @@ public class formWindow extends JFrame {
 		}
 		
 		String[][] inputWhere = {{columns[0], "'" + nameForModifyObject.toUpperCase() + "'"}};
-		
 		ResultSet recoveredResultSet = dao.dbio.select(columns, tables, inputWhere);
-		
 		String[] recoveredArray = new String[data.length];
 		
 		try {
@@ -554,10 +491,9 @@ public class formWindow extends JFrame {
 				
 			}
 		} catch (SQLException e) {
-			// Error leyendo el resultado de la consulta.
-			e.printStackTrace();
+			new alertWindow("Error 318: No se han podido recuperar los datos de este registro", "Aceptar");
+			//e.printStackTrace();
 			recoveredArray = null;
-			System.out.println("SQL Exception");
 		}
 		
 		return recoveredArray;
@@ -590,8 +526,8 @@ public class formWindow extends JFrame {
 					
 				}
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				new alertWindow("Error 319: Fallo en recuperar todos los proveedores", "Aceptar");
+				//e.printStackTrace();
 			}		
 			
 			break;

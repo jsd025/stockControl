@@ -2,23 +2,23 @@ package mainWindow;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+//Class for set the content and format for the menu
 public class menuPanel extends JPanel{
 	
-	//JList listButtonsMenu;
-	Color menuBackgroundColor, menuButtonColor, menuButtonSelectedColor;
-	ArrayList<JButton> buttonList = new ArrayList<JButton>();
-	int indexSelectedButton;
-	Dimension panelDimension;
-	int buttonPositionX, buttonPositionY, buttonWidth, buttonHeight, topMargin;
+	//CLASS VARIABLES
+	private Color menuBackgroundColor, menuButtonColor, menuButtonSelectedColor;
+	private ArrayList<JButton> buttonList = new ArrayList<JButton>();
+	private int indexSelectedButton;
+	private Dimension panelDimension;
+	private int buttonPositionX, buttonPositionY, buttonWidth, buttonHeight, topMargin;
 	
+	//CONSTRUCTOR
 	menuPanel(Dimension panelDimension) {
 		
 		this.panelDimension = panelDimension;
@@ -43,6 +43,7 @@ public class menuPanel extends JPanel{
 		
 	}
 	
+	//GETTERS & SETTERS
 	public ArrayList<JButton> getButtonList() {
 		return buttonList;
 	}
@@ -82,7 +83,8 @@ public class menuPanel extends JPanel{
 	public void setMenuButtonSelectedColor(Color menuButtonSelectedColor) {
 		this.menuButtonSelectedColor = menuButtonSelectedColor;
 	}
-
+	
+	//METHODS
 	private void fillList() {
 		
 		String list[] = {"Comandero", "Productos", "Proveedores", "Platos", "Pedidos", "Administrar permisos de usuarios"};		

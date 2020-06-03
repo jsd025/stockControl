@@ -4,14 +4,15 @@ import login.loginWindow;
 import mainWindow.mainWindow;
 import setting.userSettings;
 
+//Class with main window
 public class tester {
 	
 	public static void main(String[] args) {
 		
 		loginWindow loginWindow = new loginWindow();
-		
 		Boolean loggedIn = false;
 		
+		//Wait for user login, and the open the "mainWindow".
 		do {
 			
 			loginWindow.refresh();

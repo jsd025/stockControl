@@ -1,12 +1,10 @@
 package login;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -16,14 +14,16 @@ import components.TextInputPanel;
 import components.TextPasswordPanel;
 import setting.userSettings;
 
+//Class for a login form
 public class loginWindow extends JFrame {
 	
+	//VARIABLES CLASS
 	private TextInputPanel inputUser;
 	private TextPasswordPanel inputPassword;
-	JPanel panel;
+	private JPanel panel;
 	
+	//CONSTRUCTORS
 	public loginWindow() {
-		
 		panel = new JPanel(null);
 		this.add(panel);
 		
@@ -35,24 +35,24 @@ public class loginWindow extends JFrame {
 		
 		buildComponents();
 	}
-
+	
+	//METHODS
 	private void buildComponents() {
-		
 		buildUsernameInput();
 		buildPasswordInput();		
 		buildButtonCancel();
 		buildButtonAccept();
 	}
 	
+	//Add username Input.
 	private void buildUsernameInput() {
-		//JTextInputPanel
 		inputUser = new TextInputPanel("Usuario: ", null);
 		inputUser.setBounds(10, 10, 390, 30);
 		panel.add(inputUser);
 	}
 	
+	//Add password Input.
 	private void buildPasswordInput() {
-		//JPasswordField
 		inputPassword = new TextPasswordPanel("Contraseña: ");
 		inputPassword.setBounds(10, 50, 390, 30);
 		panel.add(inputPassword);
@@ -62,6 +62,7 @@ public class loginWindow extends JFrame {
 
 		JButton buttonCancel = new JButton("Cancelar");
 		buttonCancel.setBounds(10, 90, 170, 30);
+		//Button Cancel close the program.
 		buttonCancel.setBackground(setting.programSettings.getButtonCancelColor());
 		buttonCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -76,6 +77,7 @@ public class loginWindow extends JFrame {
 		JButton buttonAccept = new JButton("Aceptar");
 		buttonAccept.setBounds(190, 90, 170, 30);
 		buttonAccept.setBackground(setting.programSettings.getButtonColor());
+		//Button Accept check if user and password are Ok.
 		buttonAccept.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -98,8 +100,8 @@ public class loginWindow extends JFrame {
 						default: internalError(); break;
 					}
 				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					new alertWindow("Error 320: No se ha podido acceder a verificar el usuario y contraseña", "Aceptar");
+					//e1.printStackTrace();
 				}
 			}
 		});
@@ -107,17 +109,14 @@ public class loginWindow extends JFrame {
 	}
 	
 	private void incorrectUserPassword() {
-		//Imprimir alerta (usuario o contraseña incorrectos).
-		printAlert("Usuario o contraseña incorrectos");
+		printAlert("Error 505: Usuario o contraseña incorrectos");
 	}
 	
 	private void correctUserPassword(String username, String permissions) {
-		//Esto solo se ejecuta si hay algún usuario que coincida con el usuario y contraseña introducidos.
 		
-		//Emitir alerta: Bienvenido "username"
 		String alertBody = "Bienvenid@ de nuevo " + username;
 		printAlert(alertBody);
-		//Este string contendrá 0 y 1 en función de si tiene el permiso o no.
+		//This string will contain 0 and 1 depending on whether you have the permission or not.
 		userSettings.setUserPermissions(permissions);
 		userSettings.setUsername(username);
 		
@@ -125,8 +124,7 @@ public class loginWindow extends JFrame {
 	}
 	
 	private void internalError() {
-		//Imprimir alerta (multiples resultados que coinciden con el usuario y la contraseña).
-		printAlert("Internal error");
+		printAlert("Error 321: Error interno");
 	}
 	
 	private void printAlert(String alertBody) {

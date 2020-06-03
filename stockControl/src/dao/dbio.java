@@ -1,15 +1,20 @@
 package dao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import alert.alertWindow;
+
+//Class that manages queries for the database
 public class dbio {
+	//All methods and variables are static
 	
+	//CLASS VARIABLES
 	protected static dbConnection objectDBConnection;
 	
+	//PRIVATE METHODS
 	private static Connection establishConnection() {
 																																																			
 		if (objectDBConnection == null) {
@@ -30,6 +35,7 @@ public class dbio {
 		
 	}
 	
+	//PUBLIC METHODS
 	public static ResultSet select(String[] columns, String[] tables, String[][] inputWhere) {
 		
 		String query;
@@ -77,6 +83,8 @@ public class dbio {
 			}
 		}
 		
+		query += " ORDER BY " + columns[0];
+		
 		System.out.println(query);
 		
 		Connection connection = establishConnection();
@@ -87,9 +95,8 @@ public class dbio {
 			Statement s = connection.createStatement();
 			rs = s.executeQuery(query);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			
+			new alertWindow("Error 302: No se ha podido seleccionar este item de la base de datos", "Aceptar");
+			//e.printStackTrace();
 			rs = null;
 		}
 		
@@ -97,17 +104,7 @@ public class dbio {
 		
 		return rs;
 	}
-	/*
-	public static void insert() {
-		
-		Connection connection = establishConnection();
-		
-		ResultSet rs;
-		
-		Statement s =  connection.createStatement();
-		
-	}
-	*/
+
 	public static int update(String[][] data, String[] tables, String[][] inputWhere) {
 		
 		int result;
@@ -157,9 +154,8 @@ public class dbio {
 			Statement s = connection.createStatement();
 			result = s.executeUpdate(query);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			//Error
+			new alertWindow("Error 303: Error al actualizar la base de datos", "Aceptar");
+			//e.printStackTrace();
 			result = -1;
 		}
 		
@@ -170,6 +166,8 @@ public class dbio {
 	}
 	
 	public static int insert(String table, String[][] data) {
+		
+		System.out.println("Insertando");
 		
 		int result;
 		
@@ -206,8 +204,8 @@ public class dbio {
 			Statement s = connection.createStatement();
 			result = s.executeUpdate(query);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			new alertWindow("Error 304: No se ha podido añadir a la base de datos", "Aceptar");
+			//e.printStackTrace();
 			result = -1;
 		}
 		
@@ -254,8 +252,8 @@ public class dbio {
 			s.executeUpdate(query);
 			success = true;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			new alertWindow("Error 305: Fallo al borrar de la base de datos", "Aceptar");
+			//e.printStackTrace();
 			success = false;
 		}
 		

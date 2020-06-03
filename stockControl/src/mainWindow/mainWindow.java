@@ -11,19 +11,15 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 
+//Class for show main JFrame
 public class mainWindow extends JFrame{
 	
-	//store user permissions.
-	Boolean[] userPermissions;
+	//CLASS VARIABLES
+	private Dimension mainWindowDimension;
+	private JSplitPane splitPane;
+	private ArrayList<JButton> menuButtonsList;
 	
-	Dimension mainWindowDimension;
-
-	JSplitPane splitPane;
-	
-	ArrayList<JButton> menuButtonsList;
-	
-	Object rightComponentOfSplit;
-	
+	//CONSTRUCTORS
 	public mainWindow(int width, int height) {
 		
 		//Position the frame at center of screen.
@@ -32,7 +28,6 @@ public class mainWindow extends JFrame{
 		//Set size of the frame.
 		mainWindowDimension = new Dimension(width, height);
 
-		
 		buildFrame();
 		
 	}
@@ -45,15 +40,12 @@ public class mainWindow extends JFrame{
 		//Set frame maximized.
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
-		
 		buildFrame();
 		
 	}
 
+	//METHODS
 	private void buildFrame() {
-		
-		//set user permissions to null in start of application (no users have logged in).
-		userPermissions = null;
 		
 		//Set CloseOperation.
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -102,22 +94,20 @@ public class mainWindow extends JFrame{
 	
 	/*
 	private void updateComponents() {
-		
 		if (rightComponentOfSplit.getClass() == content.class) {
 			((content) rightComponentOfSplit).refreshContent();
 		}
-		
 	}
 	*/
 	
 	private void menuButtonClickEvent(JButton pressedButton) {
 		
-		//Desactivo todos los botones.
+		//Disable all buttons
 		for (int i=0; i<menuButtonsList.size(); i++) {
 			menuButtonsList.get(i).setBackground(((menuPanel) splitPane.getLeftComponent()).getMenuButtonColor());
 		}
 		
-		//Activo el botón correspondiente.
+		//Activate the corresponding button
 		for (int i=0; i<menuButtonsList.size(); i++) {
 		
 			if (pressedButton.equals(menuButtonsList.get(i))) {
@@ -146,10 +136,7 @@ public class mainWindow extends JFrame{
 		
 	}
 	
-	private void updateSplitPane(Object rightComponent) {
-		
-		rightComponentOfSplit = rightComponent;
-		
+	private void updateSplitPane(Object rightComponent) {	
 		splitPane.setRightComponent((Component) rightComponent);
 		splitPane.setDividerLocation(splitPane.getDividerLocation());
 		

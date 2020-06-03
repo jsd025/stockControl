@@ -4,14 +4,17 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import alert.alertWindow;
+
+//Class to manage connections to the database
 public class dbConnection {
 	
-	Connection connection;
+	//CLASS VARIABLES
+	private Connection connection;
+	private int connectionUsedBy;
+	private Boolean closingConnection;
 	
-	int connectionUsedBy;
-	
-	Boolean closingConnection;
-	
+	//CONSTRUCTORS
 	dbConnection() {
 		
 		System.out.println("Conexion abierta");
@@ -19,27 +22,28 @@ public class dbConnection {
 		connectionUsedBy = 1;
 		closingConnection = false;
 		
+		//try to connect to the database in the constructor
 		try {
 			DriverManager.registerDriver(new com.mysql.jdbc.Driver());
 			connection = DriverManager.getConnection("jdbc:mysql://db4free.net:3306/stockcontrol?useSSL=false","pcprogramuser","WF?n(@ob~{8rX(1n");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			new alertWindow("Error 301: No se ha podido conectar con el servidor. Inténtelo de nuevo más tarde", "Aceptar");
 			e.printStackTrace();
 		}
 		
 	}
-
+	
+	//CREATING A RUNNABLE
 	Runnable tryingToCloseConnection = new Runnable() {
 	    public void run() {
-	    	
+	    	//This runnable tries to close the connection to the database. It only succeeds when the connection takes a second without being used
 	    	closingConnection = true;
 	    	
 	    	try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e1) {
-
-				//Mensaje de error: Su dispositivo ha cerrado el hilo que iba a cerrar la conexión con la base de datos. Riesgo: Alto.
-				
+				new alertWindow("Error 601: Su dispositivo ha interrumpido el cierre de la conexión con la base de datos", "Aceptar");
+				//Error de riesgo alto. La conexión puede quedar abierta.
 				e1.printStackTrace();
 			}
 	    	
@@ -64,6 +68,20 @@ public class dbConnection {
 	   }
 	};
 	
+	//METHODS
+	protected synchronized void incrementConnectionUsedBy() {
+		this.connectionUsedBy++;
+	}
+	
+	protected synchronized void decrementConnectionUsedBy() {
+		this.connectionUsedBy--;
+	}
+	
+	//GETTERS & SETTERS
+	protected synchronized void closeConnection() {
+		new Thread(tryingToCloseConnection).start();
+	}
+	
 	protected Connection getConnection() {
 		return connection;
 	}
@@ -78,18 +96,6 @@ public class dbConnection {
 
 	protected synchronized void setConnectionUsedBy(int connectionUsedBy) {
 		this.connectionUsedBy = connectionUsedBy;
-	}
-
-	protected synchronized void incrementConnectionUsedBy() {
-		this.connectionUsedBy++;
-	}
-	
-	protected synchronized void decrementConnectionUsedBy() {
-		this.connectionUsedBy--;
-	}
-	
-	protected synchronized void closeConnection() {
-		new Thread(tryingToCloseConnection).start();
 	}
 	
 }
