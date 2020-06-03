@@ -1,8 +1,8 @@
 package test;
 
 import login.loginWindow;
+import mainWindow.mainWindow;
 import setting.userSettings;
-import window.mainWindow;
 
 public class tester {
 	
@@ -13,6 +13,8 @@ public class tester {
 		Boolean loggedIn = false;
 		
 		do {
+			
+			loginWindow.refresh();
 			
 			if (userSettings.getUsername() != null) {
 				loggedIn = true;

@@ -1,4 +1,4 @@
-package window;
+package mainWindow;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -13,7 +13,7 @@ import javax.swing.SwingConstants;
 public class menuPanel extends JPanel{
 	
 	//JList listButtonsMenu;
-	Color colorPersonalizadoFondo, colorPersonalizadoTexto, colorSelectedButton;
+	Color menuBackgroundColor, menuButtonColor, menuButtonSelectedColor;
 	ArrayList<JButton> buttonList = new ArrayList<JButton>();
 	int indexSelectedButton;
 	Dimension panelDimension;
@@ -23,14 +23,14 @@ public class menuPanel extends JPanel{
 		
 		this.panelDimension = panelDimension;
 		
-		colorPersonalizadoFondo = new Color(208, 253, 105);
-		colorPersonalizadoTexto = new Color(249, 90, 90);
-		colorSelectedButton = new Color(255, 255, 255);
+		menuBackgroundColor = new Color(201, 169, 203);
+		menuButtonColor = new Color(169, 83, 160);
+		menuButtonSelectedColor = setting.programSettings.getButtonColor();
 		
 		this.setLayout(null);
 		
 		//Background color.
-		this.setBackground(colorPersonalizadoFondo);
+		this.setBackground(menuBackgroundColor);
 		
 		//Fill the list of buttons that will display.
 		fillList();
@@ -39,7 +39,7 @@ public class menuPanel extends JPanel{
 		createComponents();
 		
 		indexSelectedButton = 0;
-		buttonList.get(0).setContentAreaFilled(true);
+		buttonList.get(0).setBackground(menuButtonSelectedColor);
 		
 	}
 	
@@ -58,10 +58,34 @@ public class menuPanel extends JPanel{
 	public void setIndexSelectedButton(int indexSelectedButton) {
 		this.indexSelectedButton = indexSelectedButton;
 	}
+	
+	public Color getMenuBackgroundColor() {
+		return menuBackgroundColor;
+	}
+
+	public void setMenuBackgroundColor(Color menuBackgroundColor) {
+		this.menuBackgroundColor = menuBackgroundColor;
+	}
+
+	public Color getMenuButtonColor() {
+		return menuButtonColor;
+	}
+
+	public void setMenuButtonColor(Color menuButtonColor) {
+		this.menuButtonColor = menuButtonColor;
+	}
+
+	public Color getMenuButtonSelectedColor() {
+		return menuButtonSelectedColor;
+	}
+
+	public void setMenuButtonSelectedColor(Color menuButtonSelectedColor) {
+		this.menuButtonSelectedColor = menuButtonSelectedColor;
+	}
 
 	private void fillList() {
 		
-		String list[] = {"Comandero", "Productos", "Proveedores", "Platos", "Registro de comandas", "Administrar permisos de usuarios"};		
+		String list[] = {"Comandero", "Productos", "Proveedores", "Platos", "Pedidos", "Administrar permisos de usuarios"};		
 		String[][] userPermissions = setting.userSettings.getUserPermissions();
 		
 		JButton buttonN;
@@ -72,10 +96,10 @@ public class menuPanel extends JPanel{
 				buttonN.setText(list[i]);
 				buttonN.setMinimumSize(new Dimension(50, 30));
 				buttonN.setBorderPainted(false);
-				buttonN.setContentAreaFilled(false);
+				buttonN.setBackground(menuButtonColor);
 				buttonN.setFocusPainted(false);
 				buttonN.setHorizontalAlignment(SwingConstants.LEFT);
-				buttonN.setBackground(colorSelectedButton);
+				
 				buttonList.add(buttonN);
 			}
 		}

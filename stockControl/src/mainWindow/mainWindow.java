@@ -1,4 +1,4 @@
-package window;
+package mainWindow;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -97,13 +97,10 @@ public class mainWindow extends JFrame{
 	
 	public void refresh() {
 		mainWindowDimension = this.getContentPane().getSize();
-		
-		updateComponents();
-		//SwingUtilities.updateComponentTreeUI(this);
-	
-
+		//updateComponents();
 	}
 	
+	/*
 	private void updateComponents() {
 		
 		if (rightComponentOfSplit.getClass() == content.class) {
@@ -111,15 +108,22 @@ public class mainWindow extends JFrame{
 		}
 		
 	}
+	*/
 	
 	private void menuButtonClickEvent(JButton pressedButton) {
 		
+		//Desactivo todos los botones.
+		for (int i=0; i<menuButtonsList.size(); i++) {
+			menuButtonsList.get(i).setBackground(((menuPanel) splitPane.getLeftComponent()).getMenuButtonColor());
+		}
+		
+		//Activo el botón correspondiente.
 		for (int i=0; i<menuButtonsList.size(); i++) {
 		
 			if (pressedButton.equals(menuButtonsList.get(i))) {
 				if (((menuPanel)splitPane.getLeftComponent()).getIndexSelectedButton() != i) {
 					((menuPanel)splitPane.getLeftComponent()).setIndexSelectedButton(i);
-					menuButtonsList.get(i).setContentAreaFilled(true);
+					menuButtonsList.get(i).setBackground(((menuPanel) splitPane.getLeftComponent()).getMenuButtonSelectedColor());
 					
 					Dimension contentDimension = new Dimension(((int)mainWindowDimension.getWidth()/5*4), (int)mainWindowDimension.getHeight());
 					
@@ -128,7 +132,7 @@ public class mainWindow extends JFrame{
 						case "Productos": updateSplitPane(new content(contentDimension, "products")); break;
 						case "Proveedores": updateSplitPane(new content(contentDimension, "providers")); break;
 						case "Platos": updateSplitPane(new content(contentDimension, "plates")); break;
-						case "Registro de comandas": updateSplitPane(new content(contentDimension, "orders")); break;
+						case "Pedidos": updateSplitPane(new content(contentDimension, "orders")); break;
 						//case "Generador de informes": updateSplitPane(new contentReportsGenerator(contentDimension)); break;
 						case "Administrar permisos de usuarios": updateSplitPane(new contentUserPermissionManager(contentDimension)); break;
 						//case "Configuración": splitPane.setRightComponent(new contentUserConfiguration(contentDimension)); break;
@@ -136,8 +140,6 @@ public class mainWindow extends JFrame{
 					}
 					
 				}
-			} else {
-				menuButtonsList.get(i).setContentAreaFilled(false);
 			}
 		}
 		

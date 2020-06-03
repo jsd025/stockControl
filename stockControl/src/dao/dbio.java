@@ -11,7 +11,7 @@ public class dbio {
 	protected static dbConnection objectDBConnection;
 	
 	private static Connection establishConnection() {
-		
+																																																			
 		if (objectDBConnection == null) {
 			objectDBConnection = new dbConnection();
 		} else {
@@ -53,14 +53,23 @@ public class dbio {
 		}
 		
 		if (inputWhere != null) {
-
+			Boolean isORActive = false;
 			query += " WHERE ";
 			
 			for (int i=0; i<inputWhere.length; i++) {
+				if (inputWhere[i].length == 3) {
+					if (inputWhere[i][2] != null) {
+						if (inputWhere[i][2].equals("OR") && !isORActive) {
+							inputWhere[i][0] = "(" + inputWhere[i][0];
+							isORActive = true;
+						} else if (!inputWhere[i][2].equals("OR") && isORActive) {
+							inputWhere[i][1] += ")";
+							isORActive = false;
+						}
+					}
+				}
 				
-				inputWhere[i][1].toUpperCase();
-				
-				query += "UPPER(" + inputWhere[i][0] + ") LIKE " + inputWhere[i][1];
+				query += inputWhere[i][0] + " LIKE " + inputWhere[i][1];
 				if (inputWhere.length-1 != i) {
 					inputWhere[i][2].toUpperCase();
 					query += " " + inputWhere[i][2] + " ";
@@ -117,11 +126,8 @@ public class dbio {
 		query +=" SET ";
 		
 		for (int i=0; i<data.length; i++) {
-			if (data[i][1] != null) {
-				query += data[i][0] + " = '" + data[i][1] + "'";
-			} else {
-				query += data[i][0] + " = " + data[i][1];
-			}
+			query += data[i][0] + " = " + data[i][1];
+			
 			if ( i != (data.length-1)) {
 				query += ", ";
 			}
@@ -134,7 +140,7 @@ public class dbio {
 				
 				inputWhere[i][1].toUpperCase();
 				
-				query += "UPPER(" + inputWhere[i][0] + ") = '" + inputWhere[i][1]+"'";
+				query += "UPPER(" + inputWhere[i][0] + ") = " + inputWhere[i][1];
 					
 				if (i != inputWhere.length-1) {
 						query += " AND ";

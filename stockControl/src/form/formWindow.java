@@ -18,7 +18,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import window.content;
+import components.DoubleInputPanel;
+import mainWindow.content;
 
 public class formWindow extends JFrame {
 	
@@ -363,8 +364,16 @@ public class formWindow extends JFrame {
 					if (nameForModifyObject == null) {	//Este if se ejecuta en caso de creacion de nuevo registro. 
 						
 						String table = consultedItem.toLowerCase();
-						
-						dao.dbio.insert(table, data);
+						String[][] insertData = new String[data.length][2];
+						for (int i=0; i<insertData.length; i++) {
+							insertData[i][0] = data[i][0];
+							if (data[i][1] == null) {
+								insertData[i][1] = data[i][1];
+							} else {
+								insertData[i][1] = "'" + data[i][1] + "'";
+							}
+						}
+						dao.dbio.insert(table, insertData);
 						
 					} else {	//Este else se ejecuta en caso de actualización de un registro ya creado.
 						
@@ -378,11 +387,11 @@ public class formWindow extends JFrame {
 						
 						for (int i=0; i<updateData.length; i++) {
 							updateData[i][0] = data[i][0];
-							updateData[i][1] = data[i][1];
+							updateData[i][1] = "'" + data[i][1] + "'";
 						}
 						
 						String[] updateTables = {consultedItem.toLowerCase()};
-						String[][] inputWhere = {{data[0][0], nameForModifyObject}};
+						String[][] inputWhere = {{data[0][0], "'" + nameForModifyObject + "'"}};
 						
 						dao.dbio.update(updateData, updateTables, inputWhere);
 						

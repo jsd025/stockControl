@@ -35,7 +35,7 @@ public class dbConnection {
 	    	closingConnection = true;
 	    	
 	    	try {
-				Thread.sleep(200);
+				Thread.sleep(1000);
 			} catch (InterruptedException e1) {
 
 				//Mensaje de error: Su dispositivo ha cerrado el hilo que iba a cerrar la conexión con la base de datos. Riesgo: Alto.

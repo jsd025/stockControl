@@ -1,5 +1,7 @@
 package setting;
 
+import java.awt.Color;
+
 import alert.alertWindow;
 
 public class userSettings {
@@ -9,7 +11,7 @@ public class userSettings {
 		{"Productos", null},
 		{"Proveedores", null},
 		{"Platos", null},
-		{"Registro de comandas", null},
+		{"Pedidos", null},
 		{"Administrar permisos de usuarios", null}
 	};
 	static private String language;
