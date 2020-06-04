@@ -23,8 +23,8 @@ public class DoubleInputPanel extends JPanel {
 		
 		this.invoker = null;
 		buildFrame(selectedComboBoxData, dimension);
-		setComboBoxSelectedItem(selectedComboBoxData);
 		createComboBox(comboBoxData);
+		setComboBoxSelectedItem(selectedComboBoxData);
 		createTextField(textFieldText);
 		
 	}
@@ -33,8 +33,8 @@ public class DoubleInputPanel extends JPanel {
 		
 		this.invoker = invoker;
 		buildFrame(selectedComboBoxData, dimension);
-		setComboBoxSelectedItem(selectedComboBoxData);
 		createComboBox(comboBoxData);
+		setComboBoxSelectedItem(selectedComboBoxData);
 		createTextField(textFieldText);
 		
 	}
