@@ -1,0 +1,9 @@
+¿Qué ocurre si hay un error 301?
+Este error sólo ocurre cuando la base de datos no responde. Normalmente es por labores de mantenimiento.
+Teniendo en cuenta que el servidor de la base de datos es gratuito esto es algo que puede ocurrir en determinadas ocasiones.
+suele ocurrir de madrugada o por las mañanas.
+
+Si esto ocurre recomiendo esperar (normalmente el mantenimiento dura entre treinta minutos y dos horas).
+
+Si no fuera posible esperar, el alumno ofrece una solución añadiendo la base de datos en este repositorio.
+Aunque esto no es recomendable ya que requiere modificar los parámetros de acceso (IP, usuario y contraseña) del fichero "dao.dbConnection.java" línea 28.
